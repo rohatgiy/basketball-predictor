@@ -10,7 +10,7 @@ import json
 # if obj["lscd"][month]["mscd"]["g"][game]["stt"] == "Final":
 #   print(f'visitor: {obj["lscd"][month]["mscd"]["g"][game]["v"]["ta"]}\nhome: {obj["lscd"][month]["mscd"]["g"][game]["h"]["ta"]}')
 
-teamAbbrvs = ["ATL", "BKN", "BOS", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW", "HOU", "IND", 
+teamAbbrvs = ["ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW", "HOU", "IND", 
 "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOP", "NYK", "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"]
 
 URLs = ["http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2015/league/00_full_schedule.json", "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2016/league/00_full_schedule.json",
@@ -18,6 +18,7 @@ URLs = ["http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2015/league/00
 "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json", "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2020/league/00_full_schedule.json"]
 allPlayers = []
 pogPlayers = []
+pogVorpPlayers = []
 playerTeamDict = {}
 playerStatsDict = {}
 dataset = []
@@ -34,9 +35,11 @@ with open("stats.txt") as fileIn:
         player = line.strip().split("%")[0]
         vorp = float(line.strip().split("%")[1])
         gp = int(line.strip().split("%")[2])
-        #if type(vorp) == float and vorp >= 1.5:
-            #print(player)
-        playerStatsDict[player] = [vorp, gp]
+        health = line.strip().split("%")[3]
+        if type(vorp) == float and vorp >= 1.5:
+            print(player)
+            pogVorpPlayers.append(player)
+        playerStatsDict[player] = [vorp, gp, health]
 
 for team in teamAbbrvs:
     pogPlayers.append({})
@@ -49,8 +52,6 @@ model.add(keras.layers.Dropout(0.5))
 model.add(keras.layers.Dense(1, activation="sigmoid"))
 
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-
-
     
 def gatherStats(url):
     res = requests.get(url)
@@ -78,20 +79,38 @@ def gatherStats(url):
                             pogPlayers[playerTeamIndex][playerFullName] = 1
                         else :
                             pogPlayers[playerTeamIndex][playerFullName] += 1
-                
-    #for game in dataset:
-        #print(game[0], game[1])
-        #game.append(pogPlayers[game[0]])
-        #game.append(pogPlayers[game[1]])
-        #print(pogPlayers)
+                        #print(pogPlayers)
+    
+    #for team in pogPlayers:
+    #    for player in team.keys():
+    #        if team[player] < 
 
-if __name__ == "__main__":
+'''
+def filterPogPlayers():
+    for team in pogPlayers:
+        for player in team.items():
+            if player in playerStatsDict:
+'''
+
+def main():
     for url in URLs:
         gatherStats(url)
     with open("dataset.json", "w") as fileOut:
         json.dump(dataset, fileOut)
         fileOut.write('\n')
-        
-    get_odds("LAL", "NOP")
+    #print(pogPlayers)
+    filteredPogPlayers = []
+    for team in pogPlayers:
+        newEntry = dict(filter(lambda elem: (elem[0] in playerStatsDict) and (elem[0] in pogVorpPlayers) and (playerStatsDict[elem[0]][2] == "Healthy") and (playerStatsDict[elem[0]][1] > 100) and (elem[1] / playerStatsDict[elem[0]][1] > 0.1), team.items()))
+        print(newEntry)
+        filteredPogPlayers.append(newEntry)
+    #print(filteredPogPlayers)
+    #print(pogVorpPlayers)
+    #print(playerStatsDict)
+
+if __name__ == "__main__":
+    main()
+
+    #get_odds("LAL", "NOP")
     #print(pogPlayers)
     #main()
