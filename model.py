@@ -93,13 +93,12 @@ def gatherStats(url):
         #print(pogPlayers)
 
 if __name__ == "__main__":
-    
     for url in URLs:
         gatherStats(url)
     with open("dataset.json", "w") as fileOut:
         json.dump(dataset, fileOut)
         fileOut.write('\n')
-    print(teamScores)
-    #print(get_odds("LAL", "NOP"))
+        
+    get_odds("LAL", "NOP")
     #print(pogPlayers)
     #main()
