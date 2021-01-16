@@ -53,7 +53,7 @@ model.add(keras.layers.Dense(1, activation="sigmoid"))
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
 def get_odds(team1, team2):
-    return model.predict([teamAbbrvs[team1], teamAbbrvs[team2], ])
+    return model.predict([teamAbbrvs[team1], teamAbbrvs[team2], teamScores[team1], teamScores[team2], ])
 
 def gatherStats(url):
     res = requests.get(url)
