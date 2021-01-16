@@ -13,7 +13,11 @@ teamAbbrvs = ["ATL", "BKN", "BOS", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GS
 def main():
     res = requests.get("http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json")
     obj = res.json()
-    for _ in range(len(obj[])
+    for month in range(len(obj["lscd"])):
+        for game in range(len(obj["lscd"][month]["mscd"]["g"])):
+            if obj["lscd"][month]["mscd"]["g"][game]["stt"] == "Final":
+                print(f'visitor: {obj["lscd"][month]["mscd"]["g"][game]["v"]["ta"]}\nhome: {obj["lscd"][month]["mscd"]["g"][game]["h"]["ta"]}')
+
 
 
 if __name__ == "__main__":
