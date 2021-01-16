@@ -3,8 +3,7 @@ import json
 
 # https://raw.githubusercontent.com/alexnoob/BasketBall-GM-Rosters/master/2020-21.NBA.Roster.json
 
-teamAbbrvs = ["ATL", "BKN", "BOS", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW", "HOU", "IND", 
-"LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOP", "NYK", "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"]
+
 playerTeamList = []
 #print(len(teamAbbrvs))
 def main():
@@ -20,9 +19,13 @@ def main():
                 playerName = player["firstName"] + ' ' + player["lastName"]
             else:
                 playerName = player["name"]
-            
-            playerTeamList.append(f'{teamAbbrvs[player["tid"]]} - {playerName}')
-print(playerTeamList)
+            s = f'{playerName}%{player["tid"]}\n'
+            #print(s)
+            playerTeamList.append(s)
+
+    with open("roster.txt", "w") as fileOut:
+        fileOut.writelines(playerTeamList)
+    #print(playerTeamList)
 
 
 if __name__ == "__main__":
