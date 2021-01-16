@@ -8,8 +8,8 @@ import requests
 
 
 def main():
-    req = requests.get()
-    print('hi')
+    res = requests.get("http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json")
+    print(res.json())
 
 
 if __name__ == "__main__":
