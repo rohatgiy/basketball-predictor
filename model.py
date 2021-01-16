@@ -41,7 +41,6 @@ with open("stats.txt") as fileIn:
 for team in teamAbbrvs:
     pogPlayers.append({})
 
-<<<<<<< HEAD
 model = keras.Sequential()
 
 model.add(keras.layers.Dense(256,input_shape=(6,), activation="relu"))
@@ -52,12 +51,9 @@ model.add(keras.layers.Dense(1, activation="sigmoid"))
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
 
-def main():
-    res = requests.get("http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json")
-=======
+    
 def gatherStats(url):
     res = requests.get(url)
->>>>>>> d95914779172b8d318c49b07bdff198c429d2dc2
     obj = res.json()
     for month in range(len(obj["lscd"])):
         gameList = obj["lscd"][month]["mscd"]["g"]
@@ -90,14 +86,12 @@ def gatherStats(url):
         #print(pogPlayers)
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    get_odds("LAL", "NOP")
-=======
     for url in URLs:
         gatherStats(url)
     with open("dataset.json", "w") as fileOut:
         json.dump(dataset, fileOut)
         fileOut.write('\n')
+        
+    get_odds("LAL", "NOP")
     #print(pogPlayers)
     #main()
->>>>>>> d95914779172b8d318c49b07bdff198c429d2dc2
