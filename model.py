@@ -13,6 +13,8 @@ import json
 teamAbbrvs = ["ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW", "HOU", "IND", 
 "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOP", "NYK", "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"]
 
+teamScores=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
 URLs = ["http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2015/league/00_full_schedule.json", "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2016/league/00_full_schedule.json",
 "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2017/league/00_full_schedule.json", "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2018/league/00_full_schedule.json", 
 "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json", "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2020/league/00_full_schedule.json"]
@@ -52,7 +54,10 @@ model.add(keras.layers.Dropout(0.5))
 model.add(keras.layers.Dense(1, activation="sigmoid"))
 
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-    
+
+def get_odds(team1, team2):
+    return model.predict([teamAbbrvs[team1], teamAbbrvs[team2], teamScores[team1], teamScores[team2], ])
+
 def gatherStats(url):
     res = requests.get(url)
     obj = res.json()
@@ -65,6 +70,10 @@ def gatherStats(url):
                 if currentGame["v"]["ta"] in teamAbbrvs and currentGame["h"]["ta"] in teamAbbrvs:
                     gameData.append(teamAbbrvs.index(currentGame["v"]["ta"]))
                     gameData.append(teamAbbrvs.index(currentGame["h"]["ta"]))
+
+                    teamScores[teamAbbrvs.index(currentGame["v"]["ta"])] += int(currentGame["v"]["s"])
+                    teamScores[teamAbbrvs.index(currentGame["h"]["ta"])] += int(currentGame["h"]["s"])
+
                     gameData.append(int(currentGame["v"]["s"]))
                     gameData.append(int(currentGame["h"]["s"]))
                     dataset.append(gameData)
