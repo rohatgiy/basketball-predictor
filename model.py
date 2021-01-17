@@ -97,14 +97,13 @@ def gatherStats(url):
                     #print(awayRec, awayWins, awayLosses)
 
                     if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]):
-                        ans.append(float(1))
                         lossesOverYears[yearIndex][currentGame["v"]["ta"]] += float(1)
                         winsOverYears[yearIndex][currentGame["h"]["ta"]] += float(1)
                     else:
-                        ans.append(float(0))
                         winsOverYears[yearIndex][currentGame["v"]["ta"]] += float(1)
                         lossesOverYears[yearIndex][currentGame["h"]["ta"]] += float(1)
                     if yearIndex != 0:
+                        ans.append(float(1)) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else ans.append(float(0))
                         gameData.append(teamAbbrvs.index(currentGame["v"]["ta"]))
                         gameData.append(teamAbbrvs.index(currentGame["h"]["ta"]))
                         gameData.append(float(currentGame["v"]["s"]))
