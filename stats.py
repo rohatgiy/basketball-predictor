@@ -36,7 +36,7 @@ def main():
                                 playerVORP += season["vorp"]
                                 #print(playerVORP)
                                 latestseason += 1
-                        print(playerVORP)
+                        #print(playerVORP)
                 playerAvgVORP = 0
                 avgORTG = 0
                 avgDRTG = 0
@@ -54,7 +54,7 @@ def main():
                 s = f'{playerName}%{playerAvgVORP}%{gamesPlayed}%{playerHealth}%{avgORTG}%{avgDRTG}\n'
                 #print(s)
                 playerStatList.append(s)
-
+            
     with open("stats.txt", "w") as fileOut:
         fileOut.writelines(playerStatList)
     #print(playerTeamList)
