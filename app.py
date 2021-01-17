@@ -30,7 +30,7 @@ def results():
     awayTeamName = teamnames[awayIndex]
     return render_template("results.html", home_win = homeWin, home_lose = 100 - homeWin, home_team_name = homeTeamName, away_team_name = awayTeamName)
 
-@app.errorhandler(404, 405)
+@app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('index'))
 
