@@ -78,7 +78,9 @@ for team in teamAbbrvs:
     pogPlayers.append({})
 
 def get_odds(team1, team2):
-    return f'AWAY: {teamAbbrvs[team1]}\nHOME: {teamAbbrvs[team2]}\n{teamAbbrvs[team2]} WINS {model.predict([[team1, team2, winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], playoffWinsOverYears[4][team1], playoffLossesOverYears[4][team1], playoffWinsOverYears[4][team2], playoffLossesOverYears[4][team2], teamORTGs[team1], teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])]])[0][0]}% OF THE TIME'
+    return model.predict([team1, team2, teamScores[team1], teamScores[team2], winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
+    lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], teamORTGs[team1],
+    teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])][0][0])
 
 def gatherStats(url):
     res = requests.get(url)
