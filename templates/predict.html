@@ -1,21 +1,31 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
-
-<div class="predictCont">
-    <form method="post" id="form" action="{{url_for('results')}}" >
-        <select onchange="if (this.selectedIndex>=0) selectVal(this)" id="homeSelect" name="homeTeam">
-            {% for team in teams %}
-            <option name="homeTeam" value = "{{loop.index - 1}}">{{team}}</option>{% endfor %}
-        </select>
-        <select onchange="if (this.selectedIndex>=0) selectVal(this)" id="awaySelect" name="awayTeam">
-            {% for team in teams %}
-            <option name="awayTeam" value = "{{loop.index - 1}}">{{team}}</option>{% endfor %}
-        </select>
+<br>
+<div class="predictCont offset-md-2 col-md-8">
+    <form method="post" id="form" class="form-group" action="{{url_for('results')}}" >
+        <div class="row">
+            <div class="col-md-4">
+                <label for="homeTeam">Home Team:</label>
+                <select class="form-control" onchange="if (this.selectedIndex>=0) selectVal(this)" id="homeSelect" name="homeTeam">
+                    {% for team in teams %}
+                    <option name="homeTeam" value = "{{loop.index - 1}}">{{team}}</option>{% endfor %}
+                </select>
+            </div>
+            <div class=col-md-4 style="text-align: center; padding-top: 5vh; font-size: x-large; font-weight: bold;">VS.</div>
+            <div class="col-md-4">
+                <label for="awayTeam">Away Team:</label>
+                <select class="form-control" onchange="if (this.selectedIndex>=0) selectVal(this)" id="awaySelect" name="awayTeam">
+                    {% for team in teams %}
+                    <option name="awayTeam" value = "{{loop.index - 1}}">{{team}}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
         <br>
-        <button type="button" id = "predictButton" class="btn btn-primary" onclick="validate(this)">Click to Predict!</button>
-        <small id = "errorMsg" class = "form-text text-danger">Error: Please select two different teams.</small>
+        <div class="form-group">
+            <button type="button" id = "predictButton" class="btn btn-primary offset-md-5 col-md-2" onclick="validate(this)">Predict!</button>
+            <small id = "errorMsg" class = "form-text text-danger">Error: Please select two different teams.</small>
+        </div>
     </form>
 </div>
 <script>
