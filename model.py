@@ -79,25 +79,6 @@ with open("roster.txt") as fileIn:
 for team in teamAbbrvs:
     pogPlayers.append({})
 
-def setup():
-    for urlInd in range(len(URLs)):
-        gatherStats(URLs[urlInd])
-    for team in pogPlayers:
-        newEntry = dict(filter(lambda elem: (elem[0] in playerStatsDict) and ((elem[0] in pogVorpPlayers) or ((playerStatsDict[elem[0]][2] == "Healthy") and (playerStatsDict[elem[0]][1] > 140) and (elem[1] / playerStatsDict[elem[0]][1] > 0.13))), team.items()))
-        filteredPogPlayers.append(newEntry)
-    avgRatings()
-    add_other_stats()
-
-def get_odds_loaded(model, team1, team2):
-    setup()
-    return get_odds(model, team1, team2)
-
-def get_odds(model, team1, team2):
-    return model.predict([[team1, team2, winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
-    lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], 
-    playoffWinsOverYears[4][team1], playoffLossesOverYears[4][team1], playoffWinsOverYears[4][team2], playoffLossesOverYears[4][team2], teamORTGs[team1],
-    teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])]])[0][0]
-
 
 def gatherStats(url):
     res = requests.get(url)
@@ -207,14 +188,15 @@ def add_other_stats():
         #print(gdata)
         #time.sleep(0.1)
 
-def main():
-    model.add(keras.layers.Dense(256, activation="relu",input_shape=(20,)))
-    #model.add(keras.layers.Dense(875, input_shape=(256,), activation="relu"))
-    model.add(keras.layers.Dropout(0.5))
-    model.add(keras.layers.Dense(1, activation="sigmoid"))
+for urlInd in range(len(URLs)):
+    gatherStats(URLs[urlInd])
+for team in pogPlayers:
+    newEntry = dict(filter(lambda elem: (elem[0] in playerStatsDict) and ((elem[0] in pogVorpPlayers) or ((playerStatsDict[elem[0]][2] == "Healthy") and (playerStatsDict[elem[0]][1] > 140) and (elem[1] / playerStatsDict[elem[0]][1] > 0.13))), team.items()))
+    filteredPogPlayers.append(newEntry)
+avgRatings()
+add_other_stats()
 
-    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-    '''
+def setup():
     for urlInd in range(len(URLs)):
         gatherStats(URLs[urlInd])
     for team in pogPlayers:
@@ -222,14 +204,40 @@ def main():
         filteredPogPlayers.append(newEntry)
     avgRatings()
     add_other_stats()
-    '''
-    setup()
-    print(filteredPogPlayers)
+
+def get_odds_loaded(model, team1, team2):
+    return get_odds(model, team1, team2)
+
+def get_odds(model, team1, team2):
+    return model.predict([[team1, team2, winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
+    lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], 
+    playoffWinsOverYears[4][team1], playoffLossesOverYears[4][team1], playoffWinsOverYears[4][team2], playoffLossesOverYears[4][team2], teamORTGs[team1],
+    teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])]])[0][0]
+
+
+def main():
+    model.add(keras.layers.Dense(256, activation="relu",input_shape=(20,)))
+    #model.add(keras.layers.Dense(875, input_shape=(256,), activation="relu"))
+    model.add(keras.layers.Dropout(0.5))
+    model.add(keras.layers.Dense(1, activation="sigmoid"))
+
+    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+    
+    
+    
+    
+    #print(filteredPogPlayers)
     train_ans = tf.convert_to_tensor(ans)
     train_data = tf.convert_to_tensor(data)
-    model.fit(train_data, train_ans, epochs=250)
-    model.save("probaball_model.h5") 
+    model.fit(train_data, train_ans, epochs=150)
+    model.save("probaball_model.h5")
+    for i in range(30):
+        if i != 15:
+            print(i)
+            print(get_odds(model, 15, i), get_odds(model, i, 15))
+    
     #print(filteredPogPlayers)
 
 if __name__ == "__main__":
     main()
+
