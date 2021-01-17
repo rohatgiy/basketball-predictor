@@ -142,11 +142,7 @@ def gatherStats(url):
                             winsOverYears[yearIndex][awayInd] += float(1)
                             lossesOverYears[yearIndex][homeInd] += float(1)
                     if yearIndex != 0:
-<<<<<<< HEAD
-                        ans.append(1 if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else 0)
-=======
                         ans.append(float(1)) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else ans.append(float(0))
->>>>>>> 515f9cdd70b181ba4cddb48df17333d644d19423
                         gameData.append(awayInd)
                         gameData.append(homeInd)
                         #gameData.append(float(teamScores[awayInd]))
