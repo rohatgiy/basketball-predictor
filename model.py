@@ -70,6 +70,10 @@ for team in teamAbbrvs:
     pogPlayers.append({})
 
 def get_odds(team1, team2):
+    print(winsOverYears[5][team1])
+    print(lossesOverYears[5][team1])
+    print(winsOverYears[4][team1])
+    print(lossesOverYears[4][team1])
     return model.predict([team1, team2, teamScores[team1], teamScores[team2], winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
     lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], teamORTGs[team1],
     teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])])
