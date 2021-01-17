@@ -14,35 +14,44 @@ def main():
         player = obj["players"][playerInd]
         playerName = "N/A"
         playerVORP = 0
-        seasons = 0
+        latestseason = 0
         gamesPlayed = 0
+        ovrORTG = 0
+        ovrDRTG = 0
         #print(player["tid"])
         if player["tid"] >= 0:
             if "stats" in player:
                 if "injury" in player:
                     playerHealth = player["injury"]["type"]
                 for season in player["stats"]:
-                    if season["season"] >= 2015:
+                    if season["season"] >= 2016 and season["season"] < 2021:
                         gamesPlayed += season["gp"]
                         #print(year["season"])
                         if season["season"] == 2020:
+                            if "ortg" in season:
+                                ovrORTG += season["ortg"]
+                                ovrDRTG += season["drtg"]
                             if "vorp" in season:
                                 #print(year["vorp"])
                                 playerVORP += season["vorp"]
                                 #print(playerVORP)
-                                seasons += 1
+                                latestseason += 1
                         print(playerVORP)
                 playerAvgVORP = 0
+                avgORTG = 0
+                avgDRTG = 0
                 #if type(playerVORP) == int or type(playerVORP) == float:
-                if seasons > 0:
-                    playerAvgVORP = playerVORP/seasons
+                if latestseason > 0:
+                    avgORTG = ovrORTG / latestseason
+                    avgDRTG = ovrDRTG / latestseason
+                    playerAvgVORP = playerVORP / latestseason
                 
                 
                 if "name" not in player:
                     playerName = player["firstName"] + ' ' + player["lastName"]
                 else:
                     playerName = player["name"]
-                s = f'{playerName}%{playerAvgVORP}%{gamesPlayed}%{playerHealth}\n'
+                s = f'{playerName}%{playerAvgVORP}%{gamesPlayed}%{playerHealth}%{avgORTG}%{avgDRTG}\n'
                 #print(s)
                 playerStatList.append(s)
 
