@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+
+<div class="predictCont">
+    <form method="post" id="form" action="{{url_for('results')}}" >
+        <select onchange="if (this.selectedIndex>=0) selectVal(this)" id="homeSelect" name="homeTeam">
+            {% for team in teams %}
+            <option name="homeTeam" value = "{{loop.index - 1}}">{{team}}</option>{% endfor %}
+        </select>
+        <select onchange="if (this.selectedIndex>=0) selectVal(this)" id="awaySelect" name="awayTeam">
+            {% for team in teams %}
+            <option name="awayTeam" value = "{{loop.index - 1}}">{{team}}</option>{% endfor %}
+        </select>
+        <br>
+        <button type="button" id = "predictButton" class="btn btn-primary" onclick="validate(this)">Click to Predict!</button>
+        <small id = "errorMsg" class = "form-text text-danger">Error: Please select two different teams.</small>
+    </form>
+</div>
+<script>
+    away = document.getElementById("awaySelect");
+    options = away.getElementsByTagName("option");
+    error = document.getElementById("errorMsg");
+    for(i=0; i < options.length; i++) {
+        if (i == 1) {
+            options[i].selected = true;
+        }
+    }
+    error.style.visibility="hidden";
+    
+    
+    function selectVal(e) {
+        home = document.getElementById("homeSelect").value;
+        away = document.getElementById("awaySelect").value;
+        error = document.getElementById("errorMsg");
+        console.log(home, away);
+        if (home == away) {
+            error.style.visibility = "visible";
+        } else {
+            error.style.visibility = "hidden";
+        }
+    }
+    function validate(e) {
+        home = document.getElementById("homeSelect").value;
+        away = document.getElementById("awaySelect").value;
+        error = document.getElementById("errorMsg");
+        console.log('event');
+        console.log(home, away);
+        if (home == away) {
+            error.style.visibility = "visible";
+        } else {
+            form.submit();
+            error.style.visibility = "hidden";
+        }
+    }
+</script>
+    
+{% endblock %}

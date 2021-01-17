@@ -1,0 +1,7 @@
+body {
+    background-color: rgb(150, 16, 72);
+}
+
+#errorMsg {
+    visibility: hidden;
+}

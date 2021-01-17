@@ -4,6 +4,8 @@ from tensorflow import keras
 import requests
 import json
 import time
+import h5py
+import os
 
 # "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2020/league/00_full_schedule.json"
 # http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json
@@ -77,10 +79,25 @@ with open("roster.txt") as fileIn:
 for team in teamAbbrvs:
     pogPlayers.append({})
 
-def get_odds(team1, team2):
-    return model.predict([team1, team2, teamScores[team1], teamScores[team2], winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
-    lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], teamORTGs[team1],
-    teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])])[0][0]
+def setup():
+    for urlInd in range(len(URLs)):
+        gatherStats(URLs[urlInd])
+    for team in pogPlayers:
+        newEntry = dict(filter(lambda elem: (elem[0] in playerStatsDict) and ((elem[0] in pogVorpPlayers) or ((playerStatsDict[elem[0]][2] == "Healthy") and (playerStatsDict[elem[0]][1] > 140) and (elem[1] / playerStatsDict[elem[0]][1] > 0.13))), team.items()))
+        filteredPogPlayers.append(newEntry)
+    avgRatings()
+    add_other_stats()
+
+def get_odds_loaded(model, team1, team2):
+    setup()
+    return get_odds(model, team1, team2)
+
+def get_odds(model, team1, team2):
+    return model.predict([[team1, team2, winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
+    lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], 
+    playoffWinsOverYears[4][team1], playoffLossesOverYears[4][team1], playoffWinsOverYears[4][team2], playoffLossesOverYears[4][team2], teamORTGs[team1],
+    teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])]])[0][0]
+
 
 def gatherStats(url):
     res = requests.get(url)
@@ -125,7 +142,7 @@ def gatherStats(url):
                             winsOverYears[yearIndex][awayInd] += float(1)
                             lossesOverYears[yearIndex][homeInd] += float(1)
                     if yearIndex != 0:
-                        ans.append([1, 0]) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else ans.append([0, 1])
+                        ans.append(float(1)) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else ans.append(float(0))
                         gameData.append(awayInd)
                         gameData.append(homeInd)
                         #gameData.append(float(teamScores[awayInd]))
@@ -191,39 +208,27 @@ def add_other_stats():
         #time.sleep(0.1)
 
 def main():
-
     model.add(keras.layers.Dense(256, activation="relu",input_shape=(20,)))
     #model.add(keras.layers.Dense(875, input_shape=(256,), activation="relu"))
     model.add(keras.layers.Dropout(0.5))
     model.add(keras.layers.Dense(1, activation="sigmoid"))
 
-    model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
-
+    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+    '''
     for urlInd in range(len(URLs)):
         gatherStats(URLs[urlInd])
     for team in pogPlayers:
         newEntry = dict(filter(lambda elem: (elem[0] in playerStatsDict) and ((elem[0] in pogVorpPlayers) or ((playerStatsDict[elem[0]][2] == "Healthy") and (playerStatsDict[elem[0]][1] > 140) and (elem[1] / playerStatsDict[elem[0]][1] > 0.13))), team.items()))
         filteredPogPlayers.append(newEntry)
-    #print(filteredPogPlayers)
     avgRatings()
     add_other_stats()
-    #print(winsOverYears)
-    #print(lossesOverYears)
+    '''
+    setup()
+    print(filteredPogPlayers)
     train_ans = tf.convert_to_tensor(ans)
     train_data = tf.convert_to_tensor(data)
-    #print(train_ans)
-    #print(train_data)
-    #print(winsOverYears)
-    #print(lossesOverYears)
-    #print(ans)
-    #train_data = tf.data.Dataset.from_tensor_slices(data)
-    #valid_data = tf.data.Dataset.from_tensor_slices(ans)
-    #model.fit(data, ans, epochs=50)
     model.fit(train_data, train_ans, epochs=250)
-    for i in range(15):
-        for j in range(15):
-            if i != j:
-                print(get_odds(i, j))
+    model.save("probaball_model.h5") 
     #print(filteredPogPlayers)
 
 if __name__ == "__main__":
