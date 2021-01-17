@@ -73,13 +73,9 @@ for team in teamAbbrvs:
     pogPlayers.append({})
 
 def get_odds(team1, team2):
-    print(winsOverYears[5][team1])
-    print(lossesOverYears[5][team1])
-    print(winsOverYears[4][team1])
-    print(lossesOverYears[4][team1])
-    return model.predict([team1, team2, teamScores[team1], teamScores[team2], winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
+    return model.predict([[team1, team2, teamScores[team1], teamScores[team2], winsOverYears[5][team1], lossesOverYears[5][team1], winsOverYears[5][team2], 
     lossesOverYears[5][team2], winsOverYears[4][team1], lossesOverYears[4][team1], winsOverYears[4][team2], lossesOverYears[4][team2], teamORTGs[team1],
-    teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])])
+    teamDRTGs[team1], teamORTGs[team2], teamDRTGs[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])]])
 
 def gatherStats(url):
     res = requests.get(url)
@@ -114,7 +110,7 @@ def gatherStats(url):
                         winsOverYears[yearIndex][awayInd] += float(1)
                         lossesOverYears[yearIndex][homeInd] += float(1)
                     if yearIndex != 0:
-                        ans.append(float(1)) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else ans.append(float(0))
+                        ans.append([1, 0]) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else ans.append([0, 1])
                         gameData.append(awayInd)
                         gameData.append(homeInd)
                         gameData.append(float(currentGame["v"]["s"]))
@@ -173,12 +169,12 @@ def add_other_stats():
 
 def main():
 
-    model.add(keras.layers.Dense(256,input_shape=(18,), activation="relu"))
+    model.add(keras.layers.Dense(128,input_shape=(18,), activation="relu"))
     #model.add(keras.layers.Dense(875, input_shape=(256,), activation="relu"))
-    #model.add(keras.layers.Dropout(0.5))
-    model.add(keras.layers.Dense(1, activation="sigmoid"))
+    model.add(keras.layers.Dropout(0.5))
+    model.add(keras.layers.Dense(2, activation="softmax"))
 
-    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+    model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
     for urlInd in range(len(URLs)):
         gatherStats(URLs[urlInd])
@@ -196,9 +192,9 @@ def main():
     #print(ans)
     #train_data = tf.data.Dataset.from_tensor_slices(data)
     #valid_data = tf.data.Dataset.from_tensor_slices(ans)
-    #model.fit(data, ans, epochs=50)
+    model.fit(data, ans, epochs=250)
     #model.fit(train_data, epochs=50, validation_data=valid_data)
-    #print(get_odds(0, 9))
+    print(get_odds(0, 9))
 
 if __name__ == "__main__":
     main()
