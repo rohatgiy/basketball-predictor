@@ -38,9 +38,6 @@ for year in range(len(winsOverYears)):
         winsOverYears[year][team] = 0
         lossesOverYears[year][team] = 0
 
-
-
-
 with open("stats.txt") as fileIn:
     for line in fileIn:
         l = line.strip().split("%")
@@ -166,7 +163,7 @@ def add_other_stats():
 
 def main():
 
-    model.add(keras.layers.Dense(256,input_shape=(6,), activation="relu"))
+    model.add(keras.layers.Dense(256,input_shape=(18,), activation="relu"))
     #model.add(keras.layers.Dense(875, input_shape=(256,), activation="relu"))
     #model.add(keras.layers.Dropout(0.5))
     model.add(keras.layers.Dense(1, activation="sigmoid"))
@@ -183,8 +180,8 @@ def main():
     #print(winsOverYears)
     #print(lossesOverYears)
     #print(ans)
-    #model.fit(data, ans, epochs=50)
-    #print(get_odds(0, 9))
+    model.fit(data, ans, epochs=50)
+    print(get_odds(0, 9))
 
 if __name__ == "__main__":
     main()
