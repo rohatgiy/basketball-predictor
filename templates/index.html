@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    
+    <div id="outer" class="col-md-4 offset-md-4" style="margin-top: 10%; opacity: 0; transform:translateY(100%); transition:all 2s;">
+        <div class="main-page" style="text-align: center; width:100%; height:100%">
+            <div class="title" style="font-size: 40px;">Welcome to ProbaBall.</div>
+            <div class="logo-image"><img src="/static/probaball_logo.png" width="300px"></div>
+            <div class="blurb" style="font-size: 25px;">Predict your first NBA Game today.</div>
+            <br><br>
+            <a href="{{url_for('predict')}}"><button class="btn btn-primary col-md-6">Get Started</button></a>
+        </div>
+    </div>
+    <script>
+        document.getElementById("outer").style.opacity = 1;
+        document.getElementById("outer").style.transform = 'translateY(0%)';
+    </script>
 {% endblock %}
