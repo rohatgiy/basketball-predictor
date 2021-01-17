@@ -5,5 +5,5 @@ import h5py
 
 
 def getResults(team1, team2):
-    new_model = keras.models.load_model("./probaball_model_1.h5")
+    new_model = keras.models.load_model("./probaball_model_3.h5")
     return get_odds_loaded(new_model, team1, team2)
