@@ -26,8 +26,11 @@ playerTeamDict = {}
 playerStatsDict = {}
 data = []
 filteredPogPlayers = []
-winsOverYears = [{}, {}, {}, {}, {}, {}]
-lossesOverYears = [{}, {}, {}, {}, {}, {}]
+winsOverYears = []
+lossesOverYears = []
+for i in range(6):
+    winsOverYears.append([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+    lossesOverYears.append([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
 teamORTGs = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 teamDRTGs = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 ans = []
@@ -35,8 +38,8 @@ model = keras.Sequential()
 
 for year in range(len(winsOverYears)):
     for team in teamAbbrvs:
-        winsOverYears[year][team] = 0
-        lossesOverYears[year][team] = 0
+        winsOverYears[year][teamAbbrvs.index(team)] = 0
+        lossesOverYears[year][teamAbbrvs.index(team)] = 0
 
 with open("stats.txt") as fileIn:
     for line in fileIn:
@@ -86,7 +89,11 @@ def gatherStats(url):
             gameData = []
             currentGame = gameList[game]
             if currentGame["stt"] == "Final":
-                if currentGame["v"]["ta"] in teamAbbrvs and currentGame["h"]["ta"] in teamAbbrvs:
+                homeAbbrv = currentGame["h"]["ta"]
+                awayAbbrv = currentGame["v"]["ta"]
+                if awayAbbrv in teamAbbrvs and homeAbbrv in teamAbbrvs:
+                    homeInd = teamAbbrvs.index(homeAbbrv)
+                    awayInd = teamAbbrvs.index(awayAbbrv)
                     homeRec = currentGame["h"]["re"]
                     awayRec = currentGame["v"]["re"]
                     homeWins = float(homeRec[:homeRec.index("-")])
@@ -97,31 +104,31 @@ def gatherStats(url):
                     #print(awayRec, awayWins, awayLosses)
 
                     if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]):
-                        lossesOverYears[yearIndex][currentGame["v"]["ta"]] += float(1)
-                        winsOverYears[yearIndex][currentGame["h"]["ta"]] += float(1)
+                        lossesOverYears[yearIndex][awayInd] += float(1)
+                        winsOverYears[yearIndex][homeInd] += float(1)
                     else:
-                        winsOverYears[yearIndex][currentGame["v"]["ta"]] += float(1)
-                        lossesOverYears[yearIndex][currentGame["h"]["ta"]] += float(1)
+                        winsOverYears[yearIndex][awayInd] += float(1)
+                        lossesOverYears[yearIndex][homeInd] += float(1)
                     if yearIndex != 0:
                         ans.append(float(1)) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else ans.append(float(0))
-                        gameData.append(teamAbbrvs.index(currentGame["v"]["ta"]))
-                        gameData.append(teamAbbrvs.index(currentGame["h"]["ta"]))
+                        gameData.append(awayInd)
+                        gameData.append(homeInd)
                         gameData.append(float(currentGame["v"]["s"]))
                         gameData.append(float(currentGame["h"]["s"]))
                         gameData.append(awayWins)
                         gameData.append(awayLosses)
                         gameData.append(homeWins)
                         gameData.append(homeLosses)
-                        gameData.append(winsOverYears[yearIndex - 1][currentGame["v"]["ta"]])
-                        gameData.append(lossesOverYears[yearIndex - 1][currentGame["v"]["ta"]])
-                        gameData.append(winsOverYears[yearIndex - 1][currentGame["h"]["ta"]])
-                        gameData.append(lossesOverYears[yearIndex - 1][currentGame["h"]["ta"]])
+                        gameData.append(winsOverYears[yearIndex - 1][awayInd])
+                        gameData.append(lossesOverYears[yearIndex - 1][awayInd])
+                        gameData.append(winsOverYears[yearIndex - 1][homeInd])
+                        gameData.append(lossesOverYears[yearIndex - 1][homeInd])
 
                         #print(gameData)
                         #time.sleep(0.1)
 
-                        teamScores[teamAbbrvs.index(currentGame["v"]["ta"])] += float(currentGame["v"]["s"])
-                        teamScores[teamAbbrvs.index(currentGame["h"]["ta"])] += float(currentGame["h"]["s"])
+                        teamScores[awayInd] += float(currentGame["v"]["s"])
+                        teamScores[teamAbbrvs.index(homeAbbrv)] += float(currentGame["h"]["s"])
 
                         data.append(gameData)
                     highScorers = currentGame["ptsls"]["pl"]
@@ -178,9 +185,16 @@ def main():
     add_other_stats()
     #print(winsOverYears)
     #print(lossesOverYears)
+    print(len(data))
+    print(len(ans))
+    #print(winsOverYears)
+    #print(lossesOverYears)
     #print(ans)
-    model.fit(data, ans, epochs=50)
-    print(get_odds(0, 9))
+    #train_data = tf.data.Dataset.from_tensor_slices(data)
+    #valid_data = tf.data.Dataset.from_tensor_slices(ans)
+    #model.fit(data, ans, epochs=50)
+    #model.fit(train_data, epochs=50, validation_data=valid_data)
+    #print(get_odds(0, 9))
 
 if __name__ == "__main__":
     main()
