@@ -230,7 +230,7 @@ def main():
     train_ans = tf.convert_to_tensor(ans)
     train_data = tf.convert_to_tensor(data)
     model.fit(train_data, train_ans, epochs=250)
-    model.save("probaball_model_2.h5")
+    model.save("probaball_model_3.h5")
     for i in range(30):
         if i != 15:
             print(i)

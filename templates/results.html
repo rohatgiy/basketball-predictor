@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <p>
-        {{home_team_name}} wins against {{away_team_name}} {{home_win}}% of the time and loses {{home_lose}}% of the time.
-    </p>
+    <br>
+    <div class="offset-md-4 col-md-4" style="text-align: center;">
+        <h3>Results:</h3>
+        <br>
+        <p>
+            {{home_team_name}} win against {{away_team_name}} <span class="text-success">{{home_win}}%</span> of the time and lose <span class="text-danger">{{home_lose}}%</span> of the time.
+        </p>
+        <a href="{{url_for('predict')}}"><button class="btn btn-primary">Predict again?</button></a>
+    </div>  
 {% endblock %}

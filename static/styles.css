@@ -1,7 +1,6 @@
 body {
-    background-color: rgb(150, 16, 72);
+    font-family: 'Poppins', sans-serif;
 }
-
 #errorMsg {
     visibility: hidden;
 }
