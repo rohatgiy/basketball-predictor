@@ -23,7 +23,10 @@ pogPlayers = []
 pogVorpPlayers = []
 playerTeamDict = {}
 playerStatsDict = {}
-dataset = []
+data = []
+filteredPogPlayers = []
+ans = []
+model = keras.Sequential()
 
 with open("roster.txt") as fileIn:
     for line in fileIn:
@@ -39,24 +42,15 @@ with open("stats.txt") as fileIn:
         gp = int(line.strip().split("%")[2])
         health = line.strip().split("%")[3]
         if type(vorp) == float and vorp >= 1.5:
-            print(player)
+            #print(player)
             pogVorpPlayers.append(player)
         playerStatsDict[player] = [vorp, gp, health]
 
 for team in teamAbbrvs:
     pogPlayers.append({})
 
-model = keras.Sequential()
-
-model.add(keras.layers.Dense(256,input_shape=(6,), activation="relu"))
-model.add(keras.layers.Dense(875, input_shape=(256,), activation="relu"))
-model.add(keras.layers.Dropout(0.5))
-model.add(keras.layers.Dense(1, activation="sigmoid"))
-
-model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-
 def get_odds(team1, team2):
-    return model.predict([teamAbbrvs[team1], teamAbbrvs[team2], teamScores[team1], teamScores[team2], ])
+    return model.predict([team1, team2, teamScores[team1], teamScores[team2], len(filteredPogPlayers[team1]), len(filteredPogPlayers[team2])])
 
 def gatherStats(url):
     res = requests.get(url)
@@ -70,13 +64,15 @@ def gatherStats(url):
                 if currentGame["v"]["ta"] in teamAbbrvs and currentGame["h"]["ta"] in teamAbbrvs:
                     gameData.append(teamAbbrvs.index(currentGame["v"]["ta"]))
                     gameData.append(teamAbbrvs.index(currentGame["h"]["ta"]))
+                    gameData.append(float(currentGame["v"]["s"]))
+                    gameData.append(float(currentGame["h"]["s"]))
 
-                    teamScores[teamAbbrvs.index(currentGame["v"]["ta"])] += int(currentGame["v"]["s"])
-                    teamScores[teamAbbrvs.index(currentGame["h"]["ta"])] += int(currentGame["h"]["s"])
+                    ans.append(float(1) if float(currentGame["h"]["s"]) > float(currentGame["v"]["s"]) else float(0))
 
-                    gameData.append(int(currentGame["v"]["s"]))
-                    gameData.append(int(currentGame["h"]["s"]))
-                    dataset.append(gameData)
+                    teamScores[teamAbbrvs.index(currentGame["v"]["ta"])] += float(currentGame["v"]["s"])
+                    teamScores[teamAbbrvs.index(currentGame["h"]["ta"])] += float(currentGame["h"]["s"])
+
+                    data.append(gameData)
                 highScorers = currentGame["ptsls"]["pl"]
                 for player in highScorers:
                     playerFullName = player["fn"] + ' ' + player["ln"]
@@ -88,38 +84,29 @@ def gatherStats(url):
                             pogPlayers[playerTeamIndex][playerFullName] = 1
                         else :
                             pogPlayers[playerTeamIndex][playerFullName] += 1
-                        #print(pogPlayers)
-    
-    #for team in pogPlayers:
-    #    for player in team.keys():
-    #        if team[player] < 
 
-'''
-def filterPogPlayers():
-    for team in pogPlayers:
-        for player in team.items():
-            if player in playerStatsDict:
-'''
+def add_players():
+    for gdata in data:
+        gdata.append(len(filteredPogPlayers[gdata[0]]))
+        gdata.append(len(filteredPogPlayers[gdata[0]]))    
 
 def main():
+
+    model.add(keras.layers.Dense(256,input_shape=(6,), activation="relu"))
+    #model.add(keras.layers.Dense(875, input_shape=(256,), activation="relu"))
+    #model.add(keras.layers.Dropout(0.5))
+    model.add(keras.layers.Dense(1, activation="sigmoid"))
+
+    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+
     for url in URLs:
         gatherStats(url)
-    with open("dataset.json", "w") as fileOut:
-        json.dump(dataset, fileOut)
-        fileOut.write('\n')
-    #print(pogPlayers)
-    filteredPogPlayers = []
     for team in pogPlayers:
         newEntry = dict(filter(lambda elem: (elem[0] in playerStatsDict) and (elem[0] in pogVorpPlayers) and (playerStatsDict[elem[0]][2] == "Healthy") and (playerStatsDict[elem[0]][1] > 100) and (elem[1] / playerStatsDict[elem[0]][1] > 0.1), team.items()))
-        print(newEntry)
         filteredPogPlayers.append(newEntry)
-    #print(filteredPogPlayers)
-    #print(pogVorpPlayers)
-    #print(playerStatsDict)
+    add_players()
+    model.fit(data, ans, epochs=50)
+    print(get_odds(0, 9))
 
 if __name__ == "__main__":
     main()
-
-    #get_odds("LAL", "NOP")
-    #print(pogPlayers)
-    #main()
