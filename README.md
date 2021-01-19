@@ -13,6 +13,8 @@ It serves to predict the outcome of an NBA match between any two given teams usi
 It was developed from the ground-up within the span of 36 hours with use of the Python library TensorFlow, the micro-framework
 Flask, and front-end technologies such as HTML, CSS and JavaScript Bootstrap.
 
+Here is a link to the DevPost page for this project: https://devpost.com/software/probaball.
+
 
 ## Data and Technologies
 The data that was used to train the model can be found in the following links:
