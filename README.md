@@ -3,9 +3,9 @@
 ![logo](/static/probaball_logo.png/)
 
 ## Table of Contents
-[Introduction](#introduction)
-[Data and Technologies](#data-and-technologies)
-[Screenshots](#screenshots)
+- [Introduction](#introduction)
+- [Data and Technologies](#data-and-technologies)
+- [Screenshots](#screenshots)
 
 ## Introduction
 ProbaBall was created by first-years Yash Rohatgi and Kevin Lee as their submission to Hack The Northeast 2021.
