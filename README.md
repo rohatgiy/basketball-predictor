@@ -1,5 +1,6 @@
 ## ProbaBall
 
+![logo](#/static/probaball_logo.png/)
 
 ## Table of Contents
 [Introduction](#introduction)
@@ -39,6 +40,6 @@ Formatting and design was then completed using JavaScript, CSS, and Bootstrap.
 
 
 ## Screenshots
-[Homepage](#/static/indexss.png/)
-[Predictpage](#/static/predictss.png/)
-[Resultpage](#/static/resultss.png/)
+[Homepage](#/static/index ss.png/)
+[Predictpage](#/static/predict ss.png/)
+[Resultpage](#/static/results ss.png/)
