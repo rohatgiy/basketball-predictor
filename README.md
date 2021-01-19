@@ -16,13 +16,13 @@ Flask, and front-end technologies such as HTML, CSS and JavaScript Bootstrap.
 
 ## Data and Technologies
 The data that was used to train the model can be found in the following links:
-[2015-2016 NBA Season Data](#http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2015/league/00_full_schedule.json)
-[2016-2017 NBA Season Data](#http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2016/league/00_full_schedule.json)
-[2017-2018 NBA Season Data](#http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2017/league/00_full_schedule.json)
-[2018-2019 NBA Season Data](#http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2018/league/00_full_schedule.json)
-[2019-2020 NBA Season Data](#http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json)
-[2020-2021 NBA Season Data](#http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2020/league/00_full_schedule.json)
-[2020-2021 NBA Roster Data](#https://raw.githubusercontent.com/alexnoob/BasketBall-GM-Rosters/master/2020-21.NBA.Roster.json)
+[2015-2016 NBA Season Data](http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2015/league/00_full_schedule.json)
+[2016-2017 NBA Season Data](http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2016/league/00_full_schedule.json)
+[2017-2018 NBA Season Data](http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2017/league/00_full_schedule.json)
+[2018-2019 NBA Season Data](http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2018/league/00_full_schedule.json)
+[2019-2020 NBA Season Data](http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json)
+[2020-2021 NBA Season Data](http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2020/league/00_full_schedule.json)
+[2020-2021 NBA Roster Data](https://raw.githubusercontent.com/alexnoob/BasketBall-GM-Rosters/master/2020-21.NBA.Roster.json)
 
 The datasets above contain game data from the past six NBA seasons (including preseason and playoffs) from each team, amounting to around
 15,000 entries. The last dataset contains complete statistics of every registered NBA player since the start of their career up until
